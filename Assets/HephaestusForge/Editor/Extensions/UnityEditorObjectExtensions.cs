@@ -4,6 +4,8 @@ using UnityEngine;
 using System.Reflection;
 using UnityEditor.SceneManagement;
 using UnityEditor.Experimental.SceneManagement;
+using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 namespace HephaestusForge
 {
@@ -106,9 +108,44 @@ namespace HephaestusForge
         /// </summary>
         /// <param name="instanceID">The instance id of the object you want to find.</param>
         /// <returns>The object found from the instanceID.</returns>
-        public static Object GetObjectByInstanceID(int instanceID)
+        public static Object GetObjectByInstanceID(int instanceID, string sceneGuid)
         {
-            return (Object)_getObjectByInstanceID.Invoke(null, new object[] { instanceID });
+            if (AssetDatabase.Contains(instanceID))
+            {
+                return AssetDatabase.LoadAssetAtPath<Object>(AssetDatabase.GetAssetPath(instanceID));
+            }
+            else if(sceneGuid != "None")
+            {
+                for (int sceneIndex = 0; sceneIndex < EditorSceneManager.sceneCount; sceneIndex++)
+                {
+                    var rootObjs = EditorSceneManager.GetSceneAt(sceneIndex).GetRootGameObjects();
+
+                    for (int i = 0; i < rootObjs.Length; i++)
+                    {
+                        List<Component> components = new List<Component>(rootObjs[i].GetComponents<Component>());
+                        components.AddRange(rootObjs[i].GetComponentsInChildren<Component>());
+
+                        for (int t = 0; t < components.Count; t++)
+                        {
+                            if(components[t].GetLocalID() == instanceID)
+                            {
+                                return components[t];
+                            }
+                        }
+                    }
+                }
+
+                var sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(AssetDatabase.GUIDToAssetPath(sceneGuid));
+
+                return sceneAsset;
+            }
+
+            return null;
+        }
+
+        public static bool IsAsset(this Object source)
+        {
+            return AssetDatabase.Contains(source);
         }
     }
 }
