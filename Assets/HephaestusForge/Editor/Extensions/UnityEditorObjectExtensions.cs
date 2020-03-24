@@ -116,8 +116,12 @@ namespace HephaestusForge
             }
             else if(sceneGuid != "None")
             {
+                var sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(AssetDatabase.GUIDToAssetPath(sceneGuid));
+
                 for (int sceneIndex = 0; sceneIndex < EditorSceneManager.sceneCount; sceneIndex++)
                 {
+                    sceneAsset = AssetDatabase.GetAssetPath(sceneAsset) == EditorSceneManager.GetSceneAt(sceneIndex).path ? null : sceneAsset;
+
                     var rootObjs = EditorSceneManager.GetSceneAt(sceneIndex).GetRootGameObjects();
 
                     for (int i = 0; i < rootObjs.Length; i++)
@@ -133,9 +137,7 @@ namespace HephaestusForge
                             }
                         }
                     }
-                }
-
-                var sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(AssetDatabase.GUIDToAssetPath(sceneGuid));
+                }                
 
                 return sceneAsset;
             }

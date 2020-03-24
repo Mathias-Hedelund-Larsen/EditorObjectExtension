@@ -94,5 +94,54 @@ namespace HephaestusForge
                 return array;
             }
         }
+
+        public static object GetCurrentValue(this SerializedProperty source)
+        {
+            switch (source.propertyType)
+            {
+                case SerializedPropertyType.Integer:
+                    return source.intValue;
+                case SerializedPropertyType.Boolean:
+                    return source.boolValue;
+                case SerializedPropertyType.Float:
+                    return source.floatValue;
+                case SerializedPropertyType.String:
+                    return source.stringValue;
+                case SerializedPropertyType.Color:
+                    return source.colorValue;
+                case SerializedPropertyType.ObjectReference:
+                    return source.objectReferenceValue;
+                case SerializedPropertyType.Vector2:
+                    return source.vector2Value;
+                case SerializedPropertyType.Vector3:
+                    return source.vector3Value;
+                case SerializedPropertyType.Vector4:
+                    return source.vector4Value;
+                case SerializedPropertyType.Rect:
+                    return source.rectValue;
+                case SerializedPropertyType.ArraySize:
+                    return source.arraySize;
+                case SerializedPropertyType.AnimationCurve:
+                    return source.animationCurveValue;
+                case SerializedPropertyType.Bounds:
+                    return source.boundsValue;
+                case SerializedPropertyType.Quaternion:
+                    return source.quaternionValue;
+                case SerializedPropertyType.ExposedReference:
+                    return source.exposedReferenceValue;
+                case SerializedPropertyType.FixedBufferSize:
+                    return source.fixedBufferSize;
+                case SerializedPropertyType.Vector2Int:
+                    return source.vector2IntValue;
+                case SerializedPropertyType.Vector3Int:
+                    return source.vector3IntValue;
+                case SerializedPropertyType.RectInt:
+                    return source.rectIntValue;
+                case SerializedPropertyType.BoundsInt:
+                    return source.boundsIntValue;
+                default:
+                    return null;
+            }
+        }
     }
 }
