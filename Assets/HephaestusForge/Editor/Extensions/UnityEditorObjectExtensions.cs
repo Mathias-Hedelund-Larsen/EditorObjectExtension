@@ -5,7 +5,6 @@ using System.Reflection;
 using UnityEditor.SceneManagement;
 using UnityEditor.Experimental.SceneManagement;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
 
 namespace HephaestusForge
 {
@@ -27,7 +26,7 @@ namespace HephaestusForge
         /// <param name="source">The source object for the extension.</param>
         /// <param name="sceneGuid">The guid of the scene to get.</param>
         /// <param name="objectID">The id of the object to get.</param>
-        public static void GetSceneGuidAndObjectID(this Object source, out string sceneGuid, out int objectID)
+        public static void GetSceneGuidAndObjectID(this Object source, out string sceneGuid, out long objectID)
         {
             if (AssetDatabase.Contains(source))
             {
@@ -41,7 +40,7 @@ namespace HephaestusForge
                 components.AddRange(prefab.GetComponentsInChildren(source.GetType()));
 
                 sceneGuid = "None";
-                int localID = source.GetLocalID();
+                long localID = source.GetLocalID();
                 objectID = localID;
 
                 for (int i = 0; i < components.Count; i++)
@@ -74,14 +73,14 @@ namespace HephaestusForge
         /// </summary>
         /// <param name="source">The source object to get the local file id.</param>
         /// <returns>The local file id.</returns>
-        public static int GetLocalID(this Object source)
+        public static long GetLocalID(this Object source)
         {
             SerializedObject serializedObject = new SerializedObject(source);
             _inspectorModeInfo.SetValue(serializedObject, InspectorMode.Debug, null);
 
             SerializedProperty localIdProp = serializedObject.FindProperty("m_LocalIdentfierInFile");
 
-            return localIdProp.intValue;
+            return localIdProp.longValue;
         }
 
         /// <summary>
@@ -108,11 +107,11 @@ namespace HephaestusForge
         /// </summary>
         /// <param name="instanceID">The instance id of the object you want to find.</param>
         /// <returns>The object found from the instanceID.</returns>
-        public static Object GetObjectByInstanceID(int instanceID, string sceneGuid)
+        public static Object GetObjectByInstanceID(long instanceID, string sceneGuid)
         {
-            if (AssetDatabase.Contains(instanceID))
+            if (AssetDatabase.Contains((int)instanceID))
             {
-                return AssetDatabase.LoadAssetAtPath<Object>(AssetDatabase.GetAssetPath(instanceID));
+                return AssetDatabase.LoadAssetAtPath<Object>(AssetDatabase.GetAssetPath((int)instanceID));
             }
             else if(sceneGuid != "None")
             {
@@ -148,6 +147,18 @@ namespace HephaestusForge
         public static bool IsAsset(this Object source)
         {
             return AssetDatabase.Contains(source);
+        }
+
+        public static string GetGuid(this Object source)
+        {
+            if (source.IsAsset())
+            {
+                return AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(source));
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

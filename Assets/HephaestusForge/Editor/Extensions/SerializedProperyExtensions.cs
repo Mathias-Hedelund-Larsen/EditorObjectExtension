@@ -79,7 +79,6 @@ namespace HephaestusForge
                     }
                 }
 
-                Debug.LogWarning("Couldnt find what you were searching for in array");
                 index = -1;
                 return array;
             }
